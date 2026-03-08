@@ -15,6 +15,8 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
+    const today = new Date().toISOString().split("T")[0];
+
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
       {
@@ -24,22 +26,25 @@ serve(async (req) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
+          model: "google/gemini-2.5-flash",
           messages: [
             {
               role: "system",
-              content: `You are a highly capable AI assistant. You help users with general Q&A, coding questions, writing, analysis, and more.
+              content: `You are BUJJI, a highly capable AI assistant with real-time web search capabilities. Today's date is ${today}.
 
 Key behaviors:
+- You have access to Google Search to find current, up-to-date information including today's news, latest events, sports scores, stock prices, weather, and any real-time data.
+- When users ask about news, current events, or anything time-sensitive, ALWAYS use your search capabilities to provide the most current information.
 - Format responses using markdown: headings, bold, lists, code blocks with language tags
 - For code questions, provide complete, working examples with syntax highlighting
 - Be concise but thorough
-- If you don't know something, say so honestly
+- Cite sources when providing news or factual claims
 - Be friendly and conversational`,
             },
             ...messages,
           ],
           stream: true,
+          tools: [{ type: "google_search" }],
         }),
       }
     );

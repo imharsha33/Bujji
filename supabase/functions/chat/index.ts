@@ -44,7 +44,7 @@ Key behaviors:
             ...messages,
           ],
           stream: true,
-          tools: [{ type: "google_search" }],
+          tools: [{ type: "googleSearch" }],
         }),
       }
     );

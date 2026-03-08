@@ -2,9 +2,8 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { ChatMessage } from "@/components/chat/ChatMessage";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { ChatSidebar } from "@/components/chat/ChatSidebar";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { Menu, Bot } from "lucide-react";
+import { Menu, Sparkles } from "lucide-react";
 import { streamChat, type Msg } from "@/lib/chat-stream";
 import {
   loadConversations,
@@ -27,12 +26,10 @@ const Index = () => {
 
   const active = conversations.find((c) => c.id === activeId)!;
 
-  // persist
   useEffect(() => {
     saveConversations(conversations);
   }, [conversations]);
 
-  // auto-scroll
   useEffect(() => {
     const el = scrollRef.current;
     if (el) el.scrollTop = el.scrollHeight;
@@ -63,7 +60,6 @@ const Index = () => {
 
     setIsLoading(true);
     let assistantSoFar = "";
-
     const allMessages = [...active.messages, userMsg];
 
     try {
@@ -116,14 +112,17 @@ const Index = () => {
 
   return (
     <div className="flex h-screen bg-background">
-      {/* Mobile sidebar overlay */}
+      {/* Mobile overlay */}
       {sidebarOpen && (
-        <div className="fixed inset-0 z-40 bg-black/50 md:hidden" onClick={() => setSidebarOpen(false)} />
+        <div
+          className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
       )}
 
       {/* Sidebar */}
       <div
-        className={`fixed z-50 h-full md:relative md:z-auto transition-transform duration-200 ${
+        className={`fixed z-50 h-full md:relative md:z-auto transition-all duration-300 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0 md:hidden"
         }`}
       >
@@ -139,42 +138,59 @@ const Index = () => {
       {/* Main */}
       <div className="flex flex-1 flex-col min-w-0">
         {/* Header */}
-        <header className="flex items-center gap-3 border-b border-border px-4 py-3">
-          <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(!sidebarOpen)}>
+        <header className="flex items-center gap-3 border-b border-border/50 px-4 py-3 backdrop-blur-md bg-background/80 sticky top-0 z-10">
+          <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(!sidebarOpen)} className="hover:bg-accent">
             <Menu className="h-5 w-5" />
           </Button>
-          <Bot className="h-5 w-5 text-primary" />
-          <h1 className="text-sm font-semibold truncate">{active.title}</h1>
+          <div className="flex items-center gap-2">
+            <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))] flex items-center justify-center">
+              <Sparkles className="h-4 w-4 text-primary-foreground" />
+            </div>
+            <h1 className="text-sm font-semibold truncate">{active.title}</h1>
+          </div>
         </header>
 
         {/* Messages */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto">
           {active.messages.length === 0 ? (
             <div className="flex h-full items-center justify-center p-8">
-              <div className="text-center space-y-4 max-w-md">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
-                  <Bot className="h-8 w-8 text-primary" />
+              <div className="text-center space-y-6 max-w-lg animate-in fade-in-0 slide-in-from-bottom-4 duration-700">
+                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))] shadow-lg shadow-primary/25">
+                  <Sparkles className="h-10 w-10 text-primary-foreground" />
                 </div>
-                <h2 className="text-xl font-semibold">How can I help you?</h2>
-                <p className="text-muted-foreground text-sm">
-                  Ask me anything — coding, writing, analysis, or general questions. I support markdown, code blocks, and image uploads.
-                </p>
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-bold gradient-text">Hey, I'm BUJJI</h2>
+                  <p className="text-muted-foreground text-sm leading-relaxed max-w-sm mx-auto">
+                    Your AI assistant — ready to help with coding, writing, analysis, or anything else. Try asking me something!
+                  </p>
+                </div>
+                <div className="flex flex-wrap justify-center gap-2 pt-2">
+                  {["Write a poem", "Explain React hooks", "Debug my code"].map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => handleSend(s, [])}
+                      className="px-4 py-2 rounded-full text-xs font-medium border border-border hover:border-primary/50 hover:bg-accent text-muted-foreground hover:text-foreground transition-all duration-200"
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           ) : (
-            <div className="max-w-3xl mx-auto">
+            <div className="max-w-3xl mx-auto pb-4">
               {active.messages.map((m, i) => (
                 <ChatMessage key={i} msg={m} />
               ))}
               {isLoading && active.messages[active.messages.length - 1]?.role === "user" && (
-                <div className="flex gap-3 px-4 py-5 bg-muted/30">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground">
-                    <Bot className="h-4 w-4" />
+                <div className="flex gap-3 px-4 py-5">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))]">
+                    <Sparkles className="h-4 w-4 text-primary-foreground" />
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <div className="h-2 w-2 rounded-full bg-primary animate-bounce [animation-delay:0ms]" />
-                    <div className="h-2 w-2 rounded-full bg-primary animate-bounce [animation-delay:150ms]" />
-                    <div className="h-2 w-2 rounded-full bg-primary animate-bounce [animation-delay:300ms]" />
+                  <div className="flex items-center gap-1.5 pt-2">
+                    <div className="h-2 w-2 rounded-full bg-primary/70 animate-bounce [animation-delay:0ms]" />
+                    <div className="h-2 w-2 rounded-full bg-primary/70 animate-bounce [animation-delay:150ms]" />
+                    <div className="h-2 w-2 rounded-full bg-primary/70 animate-bounce [animation-delay:300ms]" />
                   </div>
                 </div>
               )}

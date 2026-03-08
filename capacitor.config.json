@@ -1,0 +1,9 @@
+{
+  "appId": "app.lovable.2c614f31c53b47dfa7cdf5c0f27aba38",
+  "appName": "BUJJI AI",
+  "webDir": "dist",
+  "server": {
+    "url": "https://2c614f31-c53b-47df-a7cd-f5c0f27aba38.lovableproject.com?forceHideBadge=true",
+    "cleartext": true
+  }
+}

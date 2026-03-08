@@ -3,7 +3,7 @@ import { ChatMessage } from "@/components/chat/ChatMessage";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { ChatSidebar } from "@/components/chat/ChatSidebar";
 import { Button } from "@/components/ui/button";
-import { Menu, Sparkles } from "lucide-react";
+import { Menu, Trash2, Diamond, Brain, Code2, Search, Sparkles } from "lucide-react";
 import { streamChat, type Msg } from "@/lib/chat-stream";
 import {
   loadConversations,
@@ -12,6 +12,14 @@ import {
   type Conversation,
 } from "@/lib/conversations";
 import { useToast } from "@/hooks/use-toast";
+import bujjiHero from "@/assets/bujji-hero.png";
+
+const suggestions = [
+  { emoji: "🧠", text: "Explain neural networks with an analogy" },
+  { emoji: "💻", text: "Write a prime number sieve in Python" },
+  { emoji: "💬", text: "REST vs GraphQL differences" },
+  { emoji: "✨", text: "Sci-fi story: AI that dreams" },
+];
 
 const Index = () => {
   const [conversations, setConversations] = useState<Conversation[]>(() => {
@@ -110,6 +118,10 @@ const Index = () => {
     });
   };
 
+  const handleClearChat = () => {
+    updateConvo(activeId, (c) => ({ ...c, messages: [], title: "New Chat" }));
+  };
+
   return (
     <div className="flex h-screen bg-background">
       {/* Mobile overlay */}
@@ -138,40 +150,68 @@ const Index = () => {
       {/* Main */}
       <div className="flex flex-1 flex-col min-w-0">
         {/* Header */}
-        <header className="flex items-center gap-3 border-b border-border/50 px-4 py-3 backdrop-blur-md bg-background/80 sticky top-0 z-10">
-          <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(!sidebarOpen)} className="hover:bg-accent">
-            <Menu className="h-5 w-5" />
-          </Button>
-          <div className="flex items-center gap-2">
-            <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))] flex items-center justify-center">
-              <Sparkles className="h-4 w-4 text-primary-foreground" />
-            </div>
-            <h1 className="text-sm font-semibold truncate">{active.title}</h1>
+        <header className="flex items-center justify-between border-b border-border/30 px-4 py-3 bg-background/90 backdrop-blur-md sticky top-0 z-10">
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(!sidebarOpen)} className="hover:bg-secondary text-muted-foreground">
+              <Menu className="h-5 w-5" />
+            </Button>
           </div>
+          
+          <div className="flex items-center gap-2">
+            <div className="h-2 w-2 rounded-full bg-[hsl(var(--green-online))]" />
+            <span className="text-sm text-muted-foreground">BUJJI is online</span>
+          </div>
+
+          <Button variant="ghost" size="icon" onClick={handleClearChat} className="hover:bg-secondary text-muted-foreground">
+            <Trash2 className="h-4 w-4" />
+          </Button>
         </header>
 
         {/* Messages */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto">
           {active.messages.length === 0 ? (
-            <div className="flex h-full items-center justify-center p-8">
-              <div className="text-center space-y-6 max-w-lg animate-in fade-in-0 slide-in-from-bottom-4 duration-700">
-                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))] shadow-lg shadow-primary/25">
-                  <Sparkles className="h-10 w-10 text-primary-foreground" />
+            <div className="flex flex-col items-center justify-center h-full p-8 relative overflow-hidden">
+              {/* Hero image background */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-30">
+                <img
+                  src={bujjiHero}
+                  alt=""
+                  className="w-full max-w-4xl object-contain float-animation"
+                />
+              </div>
+
+              {/* Content */}
+              <div className="relative z-10 text-center space-y-6 max-w-2xl animate-in fade-in-0 slide-in-from-bottom-4 duration-700">
+                {/* Diamond icon */}
+                <div className="mx-auto w-20 h-20 rounded-full border-2 border-[hsl(var(--primary))]/40 flex items-center justify-center glow-blue diamond-pulse">
+                  <Diamond className="h-8 w-8 text-[hsl(var(--primary))]" />
                 </div>
-                <div className="space-y-2">
-                  <h2 className="text-2xl font-bold gradient-text">Hey, I'm BUJJI</h2>
-                  <p className="text-muted-foreground text-sm leading-relaxed max-w-sm mx-auto">
-                    Your AI assistant — ready to help with coding, writing, analysis, or anything else. Try asking me something!
+
+                {/* Title */}
+                <div className="space-y-3">
+                  <h2 className="text-4xl md:text-5xl font-bold">
+                    <span className="gradient-text-hero">Hello, I'm </span>
+                    <span className="gradient-text-bujji font-display tracking-wider">BUJJI</span>
+                  </h2>
+                  <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground font-medium">
+                    Your Intelligent AI Companion
                   </p>
                 </div>
-                <div className="flex flex-wrap justify-center gap-2 pt-2">
-                  {["Write a poem", "Explain React hooks", "Debug my code"].map((s) => (
+
+                <p className="text-sm text-muted-foreground leading-relaxed max-w-lg mx-auto">
+                  Ask me anything — from complex code to creative writing, research to calculations. I'm here to help.
+                </p>
+
+                {/* Suggestion cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 max-w-xl mx-auto">
+                  {suggestions.map((s) => (
                     <button
-                      key={s}
-                      onClick={() => handleSend(s, [])}
-                      className="px-4 py-2 rounded-full text-xs font-medium border border-border hover:border-primary/50 hover:bg-accent text-muted-foreground hover:text-foreground transition-all duration-200"
+                      key={s.text}
+                      onClick={() => handleSend(s.text, [])}
+                      className="glass-card flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm text-muted-foreground hover:text-foreground transition-all duration-300 group"
                     >
-                      {s}
+                      <span className="text-lg">{s.emoji}</span>
+                      <span className="group-hover:translate-x-0.5 transition-transform duration-200">{s.text}</span>
                     </button>
                   ))}
                 </div>
@@ -184,13 +224,13 @@ const Index = () => {
               ))}
               {isLoading && active.messages[active.messages.length - 1]?.role === "user" && (
                 <div className="flex gap-3 px-4 py-5">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))]">
-                    <Sparkles className="h-4 w-4 text-primary-foreground" />
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-accent">
+                    <Sparkles className="h-4 w-4 text-[hsl(var(--cyan-glow))]" />
                   </div>
                   <div className="flex items-center gap-1.5 pt-2">
-                    <div className="h-2 w-2 rounded-full bg-primary/70 animate-bounce [animation-delay:0ms]" />
-                    <div className="h-2 w-2 rounded-full bg-primary/70 animate-bounce [animation-delay:150ms]" />
-                    <div className="h-2 w-2 rounded-full bg-primary/70 animate-bounce [animation-delay:300ms]" />
+                    <div className="h-2 w-2 rounded-full bg-[hsl(var(--cyan-glow))]/70 animate-bounce [animation-delay:0ms]" />
+                    <div className="h-2 w-2 rounded-full bg-[hsl(var(--cyan-glow))]/70 animate-bounce [animation-delay:150ms]" />
+                    <div className="h-2 w-2 rounded-full bg-[hsl(var(--cyan-glow))]/70 animate-bounce [animation-delay:300ms]" />
                   </div>
                 </div>
               )}

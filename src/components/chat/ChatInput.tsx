@@ -8,6 +8,8 @@ interface Props {
   isLoading: boolean;
 }
 
+const MAX_CHARS = 4000;
+
 export function ChatInput({ onSend, isLoading }: Props) {
   const [text, setText] = useState("");
   const [images, setImages] = useState<string[]>([]);
@@ -40,16 +42,20 @@ export function ChatInput({ onSend, isLoading }: Props) {
     e.target.value = "";
   };
 
+  const handleChange = (val: string) => {
+    if (val.length <= MAX_CHARS) setText(val);
+  };
+
   return (
-    <div className="p-4 pb-6">
+    <div className="p-4 pb-5">
       {images.length > 0 && (
         <div className="flex gap-2 mb-3 flex-wrap">
           {images.map((src, i) => (
             <div key={i} className="relative group">
-              <img src={src} alt="" className="h-16 w-16 rounded-xl object-cover border border-border shadow-sm" />
+              <img src={src} alt="" className="h-16 w-16 rounded-xl object-cover border border-border" />
               <button
                 onClick={() => setImages((p) => p.filter((_, j) => j !== i))}
-                className="absolute -top-1.5 -right-1.5 bg-destructive text-destructive-foreground rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-sm"
+                className="absolute -top-1.5 -right-1.5 bg-destructive text-destructive-foreground rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-all duration-200"
               >
                 <X className="h-3 w-3" />
               </button>
@@ -58,39 +64,53 @@ export function ChatInput({ onSend, isLoading }: Props) {
         </div>
       )}
 
-      <div className="flex items-end gap-2 rounded-2xl border border-border/60 bg-card p-2 shadow-lg shadow-primary/5 focus-within:border-primary/40 focus-within:shadow-primary/10 transition-all duration-300">
-        <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={onFile} />
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => fileRef.current?.click()}
-          className="shrink-0 text-muted-foreground hover:text-primary hover:bg-accent rounded-xl h-10 w-10"
-        >
-          <ImagePlus className="h-5 w-5" />
-        </Button>
+      <div className="relative rounded-2xl border border-border/50 bg-card input-glow transition-all duration-300">
+        {/* Char count */}
+        <div className="absolute top-3 right-4 text-[10px] text-muted-foreground/50 tabular-nums">
+          {text.length}/{MAX_CHARS}
+        </div>
 
-        <Textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          onKeyDown={onKey}
-          placeholder="Message BUJJI..."
-          className="min-h-[44px] max-h-40 resize-none border-0 bg-transparent focus-visible:ring-0 shadow-none text-sm"
-          rows={1}
-        />
+        <div className="pt-3 pb-2 px-4">
+          <Textarea
+            value={text}
+            onChange={(e) => handleChange(e.target.value)}
+            onKeyDown={onKey}
+            placeholder="Ask BUJJI anything..."
+            className="min-h-[60px] max-h-40 resize-none border-0 bg-transparent focus-visible:ring-0 shadow-none text-sm p-0 placeholder:text-muted-foreground/40"
+            rows={2}
+          />
+        </div>
 
-        <Button
-          onClick={submit}
-          disabled={isLoading || (!text.trim() && images.length === 0)}
-          size="icon"
-          className="shrink-0 rounded-xl h-10 w-10 bg-gradient-to-r from-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))] hover:opacity-90 shadow-md shadow-primary/20 transition-all duration-200 disabled:opacity-30"
-        >
-          {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-        </Button>
+        <div className="flex items-center justify-between px-3 pb-3">
+          <div className="flex items-center gap-1">
+            <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={onFile} />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => fileRef.current?.click()}
+              className="text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl h-8 w-8"
+            >
+              <ImagePlus className="h-4 w-4" />
+            </Button>
+          </div>
+
+          <Button
+            onClick={submit}
+            disabled={isLoading || (!text.trim() && images.length === 0)}
+            size="icon"
+            className="rounded-xl h-9 w-9 bg-[hsl(var(--primary))]/20 text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/30 border border-[hsl(var(--primary))]/30 disabled:opacity-20 transition-all duration-200"
+          >
+            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+          </Button>
+        </div>
       </div>
 
-      <p className="text-[10px] text-muted-foreground/50 text-center mt-2">
-        BUJJI can make mistakes. Consider checking important info.
-      </p>
+      {/* Keyboard shortcuts */}
+      <div className="flex items-center justify-center gap-3 mt-2.5 text-[10px] text-muted-foreground/40">
+        <span>Press <kbd className="px-1.5 py-0.5 rounded bg-secondary text-muted-foreground text-[9px] font-mono">Enter</kbd> to send,</span>
+        <span><kbd className="px-1.5 py-0.5 rounded bg-secondary text-muted-foreground text-[9px] font-mono">Shift+Enter</kbd> for new line,</span>
+        <span><kbd className="px-1.5 py-0.5 rounded bg-secondary text-muted-foreground text-[9px] font-mono">Esc</kbd> to stop</span>
+      </div>
     </div>
   );
 }

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,82 +7,88 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 220 15% 15%;
+    --foreground: 230 25% 10%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 15% 15%;
+    --card: 0 0% 99%;
+    --card-foreground: 230 25% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 15%;
+    --popover-foreground: 230 25% 10%;
 
-    --primary: 220 70% 50%;
+    --primary: 262 83% 58%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 15% 94%;
-    --secondary-foreground: 220 15% 15%;
+    --secondary: 230 15% 94%;
+    --secondary-foreground: 230 25% 10%;
 
-    --muted: 220 15% 95%;
-    --muted-foreground: 220 10% 45%;
+    --muted: 230 20% 96%;
+    --muted-foreground: 230 10% 45%;
 
-    --accent: 220 15% 92%;
-    --accent-foreground: 220 15% 15%;
+    --accent: 262 40% 94%;
+    --accent-foreground: 262 83% 40%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 88%;
-    --input: 220 13% 88%;
-    --ring: 220 70% 50%;
+    --border: 230 15% 90%;
+    --input: 230 15% 90%;
+    --ring: 262 83% 58%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 220 15% 97%;
-    --sidebar-foreground: 220 10% 30%;
-    --sidebar-primary: 220 70% 50%;
+    --sidebar-background: 262 30% 97%;
+    --sidebar-foreground: 230 10% 30%;
+    --sidebar-primary: 262 83% 58%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 15% 92%;
-    --sidebar-accent-foreground: 220 15% 15%;
-    --sidebar-border: 220 13% 90%;
-    --sidebar-ring: 220 70% 50%;
+    --sidebar-accent: 262 30% 93%;
+    --sidebar-accent-foreground: 262 83% 40%;
+    --sidebar-border: 230 15% 92%;
+    --sidebar-ring: 262 83% 58%;
+
+    --gradient-start: 262 83% 58%;
+    --gradient-end: 290 80% 55%;
   }
 
   .dark {
-    --background: 220 16% 8%;
-    --foreground: 220 15% 92%;
+    --background: 230 20% 6%;
+    --foreground: 230 10% 92%;
 
-    --card: 220 16% 10%;
-    --card-foreground: 220 15% 92%;
+    --card: 230 20% 8%;
+    --card-foreground: 230 10% 92%;
 
-    --popover: 220 16% 10%;
-    --popover-foreground: 220 15% 92%;
+    --popover: 230 20% 8%;
+    --popover-foreground: 230 10% 92%;
 
-    --primary: 220 70% 55%;
+    --primary: 262 83% 65%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 15% 16%;
-    --secondary-foreground: 220 15% 92%;
+    --secondary: 230 15% 14%;
+    --secondary-foreground: 230 10% 92%;
 
-    --muted: 220 15% 14%;
-    --muted-foreground: 220 10% 55%;
+    --muted: 230 15% 12%;
+    --muted-foreground: 230 10% 50%;
 
-    --accent: 220 15% 16%;
-    --accent-foreground: 220 15% 92%;
+    --accent: 262 30% 18%;
+    --accent-foreground: 262 83% 75%;
 
     --destructive: 0 62% 30%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 18%;
-    --input: 220 15% 18%;
-    --ring: 220 70% 55%;
+    --border: 230 15% 16%;
+    --input: 230 15% 16%;
+    --ring: 262 83% 65%;
 
-    --sidebar-background: 220 16% 6%;
-    --sidebar-foreground: 220 10% 80%;
-    --sidebar-primary: 220 70% 55%;
+    --sidebar-background: 230 20% 5%;
+    --sidebar-foreground: 230 10% 75%;
+    --sidebar-primary: 262 83% 65%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 15% 14%;
-    --sidebar-accent-foreground: 220 15% 92%;
-    --sidebar-border: 220 15% 16%;
-    --sidebar-ring: 220 70% 55%;
+    --sidebar-accent: 262 20% 14%;
+    --sidebar-accent-foreground: 262 83% 75%;
+    --sidebar-border: 230 15% 14%;
+    --sidebar-ring: 262 83% 65%;
+
+    --gradient-start: 262 83% 65%;
+    --gradient-end: 290 80% 60%;
   }
 }
 
@@ -90,6 +98,10 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  code, pre {
+    font-family: 'JetBrains Mono', monospace;
   }
 }
 
@@ -99,4 +111,27 @@
 }
 .prose code {
   @apply before:content-none after:content-none;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* Gradient text utility */
+.gradient-text {
+  background: linear-gradient(135deg, hsl(var(--gradient-start)), hsl(var(--gradient-end)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
